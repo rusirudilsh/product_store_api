@@ -18,7 +18,7 @@ async def get_product_by_id(id: int) -> Product:
         result = next(filter(lambda product: int(product["product_id"]) == id, products), None)
         if result is not None:
             await ProductProcessor.set_product_stock(result)  
-            return result
+        return result
     except Exception as error:
         return Product
 
@@ -75,5 +75,5 @@ class ProductProcessor():
                 product["price"] = data.price
             data_frame.to_csv(os.path.join(os.path.dirname(__file__), "../schema/products.csv"))
             return True 
-        except Exception as csv_not_found:
+        except Exception as error:
             return False

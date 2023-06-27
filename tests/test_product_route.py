@@ -47,7 +47,7 @@ def test_update_404():
 
 
 def test_delete():
-    response = client.delete("product/1")
+    response = client.delete("product/7")
     assert response.status_code == 200
     assert response.json() == {"isDeleted": True}
 
