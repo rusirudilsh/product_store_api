@@ -9,7 +9,7 @@ product_router = APIRouter()
 
 
 @product_router.get("/list", status_code = status.HTTP_200_OK)
-async def lis_products(
+async def list_products(
     category: str | None = None,
     stock_availability: int | None = None
 ) -> dict[str, List[Product]]:
