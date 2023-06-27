@@ -42,6 +42,8 @@ async def delete_product(product_id: int) -> bool:
     if product is None:
         return None  
     result = remove_from_csv("../schema/products.csv", "product_id", product_id)
+    if result is True:
+        ProductProcessor.remove_product_stock(product_id)
     return result
     
 
@@ -61,7 +63,12 @@ class ProductProcessor():
             if stock_count > 0:
                 product["stock_count"] = stock_count
         return product  
+    
 
+    @staticmethod
+    def remove_product_stock(product_id: int) -> bool:
+        return remove_from_csv("../schema/stocks.csv", "product_id", product_id)
+    
 
     @staticmethod
     def update_product_row(data: ProductUpdate, product: Product) -> bool:
