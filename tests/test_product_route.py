@@ -44,3 +44,14 @@ def test_update_404():
                                   "name":"Ivo blue",
                                   "price":15.0})
     assert response.status_code == 404
+
+
+def test_delete():
+    response = client.delete("product/1")
+    assert response.status_code == 200
+    assert response.json() == {"isDeleted": True}
+
+
+def test_delete_404():
+    response = client.delete("product/100")
+    assert response.status_code == 404

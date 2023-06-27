@@ -1,5 +1,5 @@
 from ..models.product_update import ProductUpdate
-from ..utility.file_helper import read_csv
+from ..utility.file_helper import read_csv, remove_from_csv
 from ..models.product import Product
 import pandas as pd
 import os
@@ -30,10 +30,19 @@ async def update_product(product_id: int, update_model: ProductUpdate) -> Produc
         return None  
     if update_model != None:
         update_model.product_id = product_id
-        result = await ProductProcessor.update_product_row(update_model, product)
+        result = ProductProcessor.update_product_row(update_model, product)
         if result is True:
             await ProductProcessor.set_product_stock(product)         
         return product if result is True else Product
+
+    
+async def delete_product(product_id: int) -> bool:
+    product = next(filter(lambda prod: int(prod["product_id"]) == product_id, 
+                          await ProductProcessor.get_product_list()), None)
+    if product is None:
+        return None  
+    result = remove_from_csv("../schema/products.csv", "product_id", product_id)
+    return result
     
 
 
@@ -55,7 +64,7 @@ class ProductProcessor():
 
 
     @staticmethod
-    async def update_product_row(data: ProductUpdate, product: Product) -> bool:
+    def update_product_row(data: ProductUpdate, product: Product) -> bool:
         try:
             data_frame = pd.read_csv(os.path.join(os.path.dirname(__file__), "../schema/products.csv"), index_col='product_id')
             if data.name is not None:           

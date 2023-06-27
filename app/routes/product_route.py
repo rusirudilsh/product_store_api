@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from ..models.product_update import ProductUpdate
-from ..services.product_service import get_products, get_product_by_id, update_product
+from ..services.product_service import delete_product, get_products, get_product_by_id, update_product
 from ..models.product import Product
 from typing import List
 
@@ -38,3 +38,17 @@ async def update(product_id: int, product: ProductUpdate) -> dict[str, Product]:
                             detail = "Something went wrong", 
                             headers = {"X-Error" : "500 server error"})
     return {"updatedProduct" : result} 
+
+
+@product_router.delete("/{product_id}", status_code = status.HTTP_200_OK)
+async def delete(product_id: int):
+    result = await delete_product(product_id)
+    if result is None:
+        raise HTTPException(status_code = 404, 
+                            detail = "Product not found to delete", 
+                            headers = {"X-Error" : "404 error"})
+    if result is False:
+        raise HTTPException(status_code = 500, 
+                            detail = "Something went wrong", 
+                            headers = {"X-Error" : "500 server error"})
+    return {"isDeleted": result}
