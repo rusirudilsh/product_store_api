@@ -14,4 +14,4 @@ main_api_router.include_router(order_router, prefix="/order", tags=["order"])
 
 @main_api_router.get("/")
 async def root():
-    return {"message": "Hello World!"}
+    return {"message": "Welcome to Product Store API"}
