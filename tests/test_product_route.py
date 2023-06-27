@@ -14,7 +14,7 @@ def test_get_by_id():
         "product" : {"product_id":2, 
                      "name":"Seasalt white shirt", 
                      "category":"tops", 
-                     "price":15.0, "stock": 10}
+                     "price":15.0, "stock_count": 10}
     }
 
 
@@ -34,7 +34,7 @@ def test_update():
         "updatedProduct" : {"product_id":5,
                              "name":"Ivo blue",
                              "category":"tops", 
-                             "price":15.0, "stock": 0}
+                             "price":15.0, "stock_count": 0}
     }
 
 
@@ -43,4 +43,15 @@ def test_update_404():
                           json = {"product_id":500,
                                   "name":"Ivo blue",
                                   "price":15.0})
+    assert response.status_code == 404
+
+
+def test_delete():
+    response = client.delete("product/1")
+    assert response.status_code == 200
+    assert response.json() == {"isDeleted": True}
+
+
+def test_delete_404():
+    response = client.delete("product/100")
     assert response.status_code == 404
