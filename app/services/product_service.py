@@ -50,7 +50,7 @@ class ProductProcessor():
         if product_stock is not None:
             stock_count = int(product_stock["stock_count"])
             if stock_count > 0:
-                product["stock"] = stock_count
+                product["stock_count"] = stock_count
         return product  
 
 

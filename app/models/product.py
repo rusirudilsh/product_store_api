@@ -6,4 +6,4 @@ class Product(BaseModel):
     name: str
     category: str
     price: float
-    stock: int = 0
+    stock_count: int = 0
