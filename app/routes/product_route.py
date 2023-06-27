@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
-from ..services.product_service import get_products, get_product_by_id
+from ..models.product_update import ProductUpdate
+from ..services.product_service import get_products, get_product_by_id, update_product
 from ..models.product import Product
 from typing import List
 
@@ -23,3 +24,17 @@ async def get_by_id(product_id: int) -> dict[str, Product]:
                             detail = "Product not found", 
                             headers = {"X-Error" : "404 error"})
     return {"product": result}
+
+
+@product_router.put("/{product_id}", status_code = status.HTTP_200_OK)
+async def update(product_id: int, product: ProductUpdate) -> dict[str, Product]:
+    result = await update_product(product_id, product)
+    if result is None:
+        raise HTTPException(status_code = 404, 
+                            detail = "Product not found to update", 
+                            headers = {"X-Error" : "404 error"})
+    elif result is not None and result["product_id"] == -1:
+        raise HTTPException(status_code = 500, 
+                            detail = "Something went wrong", 
+                            headers = {"X-Error" : "500 server error"})
+    return {"updatedProduct" : result} 
