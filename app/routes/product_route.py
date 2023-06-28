@@ -11,9 +11,12 @@ product_router = APIRouter()
 @product_router.get("/list", status_code = status.HTTP_200_OK)
 async def list_products(
     category: str | None = None,
-    stock_availability: bool | None = None
-) -> dict[str, List[Product]]:
-    return {"products": await get_products(category, stock_availability)}
+    stock_availability: bool | None = None,
+    first: int = 0,
+    products_per_page: int = 5
+):
+    result = await get_products(category, stock_availability, first, products_per_page)
+    return {"products": result[0], "product_count": result[1]}
 
 
 @product_router.get("/{product_id}", status_code = status.HTTP_200_OK)

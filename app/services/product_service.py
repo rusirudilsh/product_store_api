@@ -5,14 +5,22 @@ import pandas as pd
 import os
 
 
-async def get_products(category: str, stock_availability: bool) -> list[Product]:
-        products = await ProductProcessor.get_product_list()
-        if len(products) > 0 :
-            for product in products:
-                product = await ProductProcessor.set_product_stock(product)
+async def get_products(category: str, stock_availability: bool, current_products_count: int, products_per_page: int) -> tuple[list[Product], int]:
+    products = await ProductProcessor.get_product_list()
+    products_count = len(products)
+    if products_count > 0 :
+        # if products_per_page > len(products):
+        #     products_per_page = len(products)
+        #products = products.sort(lambda prod: prod["name"] > pro)
+        slice_start = current_products_count
+        slice_stop = products_per_page + current_products_count
+        products = products[slice_start:slice_stop]
+        for product in products:
+            product = await ProductProcessor.set_product_stock(product)
         if category is not None and len(category) > 1 and category != "All" or stock_availability is True:
-            return [prod for prod in products if ProductProcessor.filter_product(prod, category, stock_availability)]
-        return products
+            return ([prod for prod in products if ProductProcessor.filter_product(prod, category, stock_availability)], products_count)
+        
+    return (products, products_count)
 
 
 async def get_product_by_id(id: int) -> Product:
