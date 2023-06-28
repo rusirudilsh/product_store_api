@@ -6,6 +6,11 @@ def test_list_products():
     assert response.status_code == 200
     assert len(response.json()['products']) > 1
 
+def test_list_products_with_filter_params():
+    response = client.get("/product/list?category=tops&stock_availability=true")
+    assert response.status_code == 200
+    assert len(response.json()['products']) == 4
+
 
 def test_get_by_id():
     response = client.get("/product/2")
@@ -47,9 +52,9 @@ def test_update_404():
 
 
 def test_delete():
-    response = client.delete("product/11")
-    assert response.status_code == 200
-    assert response.json() == {"isDeleted": True}
+     response = client.delete("product/11")
+     assert response.status_code == 200
+     assert response.json() == {"isDeleted": True}
 
 
 def test_delete_404():

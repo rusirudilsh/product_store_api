@@ -5,10 +5,13 @@ import pandas as pd
 import os
 
 
-async def get_products(category: str, stock_count: int) -> list[Product]:
+async def get_products(category: str, stock_availability: bool) -> list[Product]:
         products = await ProductProcessor.get_product_list()
-        if category is not None or stock_count is not None:
-            return []
+        if len(products) > 0 :
+            for product in products:
+                product = await ProductProcessor.set_product_stock(product)
+        if category is not None and len(category) > 1 or stock_availability is True:
+            return [prod for prod in products if ProductProcessor.filter_product(prod, category, stock_availability)]
         return products
 
 
@@ -60,7 +63,7 @@ class ProductProcessor():
         product_stock = next(filter(lambda prod: int(prod["product_id"]) == int(product["product_id"]), product_stoks), None)
         if product_stock is not None:
             stock_count = int(product_stock["stock_count"])
-            if stock_count > 0:
+            if stock_count >= 0:
                 product["stock_count"] = stock_count
         return product  
     
@@ -84,3 +87,13 @@ class ProductProcessor():
             return True 
         except Exception as error:
             return False
+
+    @staticmethod
+    def filter_product(product: Product, category: str, isAvailability: bool) -> bool:
+        print(product)
+        return all(
+            (
+                product["category"].lower() == category.lower() if category is not None and len(category) > 1 else 1 == 1,
+                product["stock_count"] > 0 if isAvailability == True else 1 == 1            
+            )
+        )
