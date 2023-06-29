@@ -30,7 +30,7 @@ async def get_product_by_id(id: int) -> Product:
         products = await ProductProcessor.get_product_list()
         result = next(filter(lambda product: int(product["product_id"]) == id, products), None)
         if result is not None:
-            await ProductProcessor.set_product_stock(result)  
+            await ProductProcessor.set_product_props(result)  
         return result
     except Exception as error:
         return Product
