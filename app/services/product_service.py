@@ -5,11 +5,24 @@ import pandas as pd
 import os
 
 
-async def get_products(category: str, stock_count: int) -> list[Product]:
-        products = await ProductProcessor.get_product_list()
-        if category is not None or stock_count is not None:
-            return []
-        return products
+async def get_products(category: str, stock_availability: bool, current_products_count: int, products_per_page: int) -> tuple[list[Product], int]:
+    products = await ProductProcessor.get_product_list()
+    products_count = len(products)
+    if products_count > 0 :
+        for product in products:
+            product = await ProductProcessor.set_product_props(product)
+        if category is not None and len(category) > 1 and category != "All" or stock_availability is True:
+            products = [prod for prod in products if ProductProcessor.filter_product(prod, category, stock_availability)]
+
+            #to set the product count after the filtering
+            #this will helps to adjust the paginator after filtering the list
+            #paginotor will be adjusted automatically with all the products as well as filtered products
+            products_count = len(products)
+        slice_start = current_products_count
+        slice_stop = products_per_page + current_products_count
+        products = products[slice_start:slice_stop]
+        
+    return (products, products_count)
 
 
 async def get_product_by_id(id: int) -> Product:
@@ -18,7 +31,7 @@ async def get_product_by_id(id: int) -> Product:
         result = next(filter(lambda product: int(product["product_id"]) == id, products), None)
         if result is not None:
             await ProductProcessor.set_product_stock(result)  
-            return result
+        return result
     except Exception as error:
         return Product
 
@@ -42,6 +55,8 @@ async def delete_product(product_id: int) -> bool:
     if product is None:
         return None  
     result = remove_from_csv("../schema/products.csv", "product_id", product_id)
+    if result is True:
+        ProductProcessor.remove_product_stock(product_id)
     return result
     
 
@@ -53,15 +68,21 @@ class ProductProcessor():
     
 
     @staticmethod
-    async def set_product_stock(product: Product):
+    async def set_product_props(product: Product):
         product_stoks = await read_csv("../schema/stocks.csv")
         product_stock = next(filter(lambda prod: int(prod["product_id"]) == int(product["product_id"]), product_stoks), None)
         if product_stock is not None:
+            product["category"] = product["category"].title()
             stock_count = int(product_stock["stock_count"])
-            if stock_count > 0:
+            if stock_count >= 0:
                 product["stock_count"] = stock_count
         return product  
+    
 
+    @staticmethod
+    def remove_product_stock(product_id: int) -> bool:
+        return remove_from_csv("../schema/stocks.csv", "product_id", product_id)
+    
 
     @staticmethod
     def update_product_row(data: ProductUpdate, product: Product) -> bool:
@@ -75,5 +96,14 @@ class ProductProcessor():
                 product["price"] = data.price
             data_frame.to_csv(os.path.join(os.path.dirname(__file__), "../schema/products.csv"))
             return True 
-        except Exception as csv_not_found:
+        except Exception as error:
             return False
+
+    @staticmethod
+    def filter_product(product: Product, category: str, isAvailability: bool) -> bool:
+        return all(
+            (
+                product["category"].lower() == category.lower() if category is not None and category != "All" else 1 == 1,
+                product["stock_count"] > 0 if isAvailability == True else isAvailability == False            
+            )
+        )
