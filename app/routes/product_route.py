@@ -16,7 +16,7 @@ async def list_products(
     products_per_page: int = 5
 ):
     result = await get_products(category, stock_availability, first, products_per_page)
-    return {"products": result[0], "product_count": result[1]}
+    return {"products": result[0], "productCount": result[1]}
 
 
 @product_router.get("/{product_id}", status_code = status.HTTP_200_OK)

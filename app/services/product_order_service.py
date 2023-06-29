@@ -30,6 +30,5 @@ class OrderProcessor():
                     data_frame.to_csv(os.path.join(os.path.dirname(__file__), "../schema/stocks.csv"))
                     return (True, "Product {} ({}) was purchased".format(product["product_id"], product["name"]))
              
-            return (False, "")
         except Exception as error:
             return (False, "500") 

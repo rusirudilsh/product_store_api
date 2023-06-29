@@ -9,16 +9,18 @@ async def get_products(category: str, stock_availability: bool, current_products
     products = await ProductProcessor.get_product_list()
     products_count = len(products)
     if products_count > 0 :
-        # if products_per_page > len(products):
-        #     products_per_page = len(products)
-        #products = products.sort(lambda prod: prod["name"] > pro)
+        for product in products:
+            product = await ProductProcessor.set_product_props(product)
+        if category is not None and len(category) > 1 and category != "All" or stock_availability is True:
+            products = [prod for prod in products if ProductProcessor.filter_product(prod, category, stock_availability)]
+
+            #to set the product count after the filtering
+            #this will helps to adjust the paginator after filtering the list
+            #paginotor will be adjusted automatically with all the products as well as filtered products
+            products_count = len(products)
         slice_start = current_products_count
         slice_stop = products_per_page + current_products_count
         products = products[slice_start:slice_stop]
-        for product in products:
-            product = await ProductProcessor.set_product_stock(product)
-        if category is not None and len(category) > 1 and category != "All" or stock_availability is True:
-            return ([prod for prod in products if ProductProcessor.filter_product(prod, category, stock_availability)], products_count)
         
     return (products, products_count)
 
@@ -66,10 +68,11 @@ class ProductProcessor():
     
 
     @staticmethod
-    async def set_product_stock(product: Product):
+    async def set_product_props(product: Product):
         product_stoks = await read_csv("../schema/stocks.csv")
         product_stock = next(filter(lambda prod: int(prod["product_id"]) == int(product["product_id"]), product_stoks), None)
         if product_stock is not None:
+            product["category"] = product["category"].title()
             stock_count = int(product_stock["stock_count"])
             if stock_count >= 0:
                 product["stock_count"] = stock_count
