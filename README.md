@@ -14,7 +14,7 @@ A Rest API project developed using FastAPI
 ## Set up and run the project using CLI and Docker environemnt
 1. clone the repo
 2. open the cloned project root folder
-3. run the command "docker-compose up -d" (-d = detach mode)
+3. run the command "docker-compose up -d" (-d = detached mode)
 4. navigate to http://localhost:8000/
 
 
