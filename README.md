@@ -10,3 +10,6 @@ A Rest API project developed using FastAPI
 
 ## run project using CLI
 uvicorn app.main:product_store_api --reload
+
+## API Documentation
+http://localhost:8000/docs
