@@ -3,6 +3,11 @@
 A Rest API project developed using FastAPI
 ```
 ## Set up and run the project using CLI
+
+```sh
+switch to development branch
+```
+
 ```sh
 create a Python virtual environment using "python3 -m venv .venv" command
 ```
@@ -28,6 +33,11 @@ navigate to http://localhost:8000/
 ## Set up and run the project using CLI and Docker environment
 
 ```sh
+switch to development branch
+```
+
+
+```sh
 run the command "docker-compose up -d" (-d = detached mode)
 ```
 
@@ -37,6 +47,7 @@ navigate to http://localhost:8000/
 
 
 ## API Documentation
+
 ```sh
 http://localhost:8000/docs
 ```
