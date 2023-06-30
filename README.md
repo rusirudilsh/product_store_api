@@ -40,3 +40,6 @@ navigate to http://localhost:8000/
 ```sh
 http://localhost:8000/docs
 ```
+
+## Use Case Diagram
+![image](https://github.com/rusirudilsh/product_store_api/assets/12104625/2332b02a-017e-44f0-902d-00dde5f1d459)
