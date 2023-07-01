@@ -8,7 +8,7 @@ order_router = APIRouter()
 @order_router.post("/")
 async def purchase_product(order_item: ProductOrder):
     result = await make_purchase(order_item)
-    if result[1] == "":
+    if result[1] == "404":
         raise HTTPException(status_code = 404, 
                             detail = "Order Item not found", 
                             headers = {"X-Error" : "404 error"})

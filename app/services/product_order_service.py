@@ -11,6 +11,7 @@ async def make_purchase(order: ProductOrder):
 
 
 
+# this function returns success status and success message. if error, then error code.
 class OrderProcessor:
     def __init__(self, order: ProductOrder):
         self.order = order
@@ -23,7 +24,7 @@ class OrderProcessor:
                 product = next(filter(lambda prod: int(prod["product_id"]) ==  item.product_id, 
                             await ProductProcessor.get_product_list()), None)
                 if product is None:
-                        return (False, "")
+                        return (False, "404")
                 if item.quantity > 0:
                     stock_data = data_frame.loc[[item.product_id]]
                     if stock_data["stock_count"].values[0] < item.quantity:
