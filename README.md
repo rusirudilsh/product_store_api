@@ -48,13 +48,14 @@ navigate to http://localhost:8000/
 ## Testing
 
 ```sh
-http://localhost:8000/docs
+![image](https://github.com/rusirudilsh/product_store_api/assets/12104625/870ab28c-a39d-4947-81f3-f7629ce0575b)
+
 ```
 
 ## API Documentation
 
 ```sh
-![image](https://github.com/rusirudilsh/product_store_api/assets/12104625/df4b9081-d081-4eee-b1f0-d8ef5a921b93)
+http://localhost:8000/docs
 
 ```
 
