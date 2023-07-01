@@ -9,7 +9,7 @@ def test_list_products():
 def test_list_products_with_filter_params():
     response = client.get("/product/list?category=tops&stock_availability=true")
     assert response.status_code == 200
-    assert len(response.json()['products']) == 4
+    assert len(response.json()['products']) == 6
 
 
 def test_get_by_id():
@@ -18,7 +18,7 @@ def test_get_by_id():
     assert response.json() == {
         "product" : {"product_id":2, 
                      "name":"Seasalt white shirt", 
-                     "category":"tops", 
+                     "category":"Tops", 
                      "price":15.0, "stock_count": 10}
     }
 
@@ -38,7 +38,7 @@ def test_update():
     assert response.json() == {
         "updatedProduct" : {"product_id":5,
                              "name":"Ivo blue",
-                             "category":"tops", 
+                             "category":"Tops", 
                              "price":15.0, "stock_count": 0}
     }
 

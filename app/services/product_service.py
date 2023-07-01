@@ -45,7 +45,7 @@ async def update_product(product_id: int, update_model: ProductUpdate) -> Produc
         update_model.product_id = product_id
         result = ProductProcessor.update_product_row(update_model, product)
         if result is True:
-            await ProductProcessor.set_product_stock(product)         
+            await ProductProcessor.set_product_props(product)         
         return product if result is True else Product
 
     
