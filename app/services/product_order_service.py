@@ -10,7 +10,7 @@ async def make_purchase(order: ProductOrder):
 
 
 
-class OrderProcessor():
+class OrderProcessor:
     @staticmethod
     async def update_stock_count(order_data: ProductOrder) -> tuple[bool, str]:
         try:
