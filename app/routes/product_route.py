@@ -13,7 +13,7 @@ async def list_products(
     category: str | None = None,
     stock_availability: bool | None = None,
     first: int = 0,
-    products_per_page: int = 5
+    products_per_page: int = 10
 ):
     result = await get_products(category, stock_availability, first, products_per_page)
     return {"products": result[0], "productCount": result[1]}
