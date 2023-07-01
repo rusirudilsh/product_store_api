@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, status
-from ..models.product_update import ProductUpdate
 from ..services.product_service import delete_product, get_products, get_product_by_id, update_product
 from ..models.product import Product
 from typing import List
@@ -30,13 +29,14 @@ async def get_by_id(product_id: int) -> dict[str, Product]:
 
 
 @product_router.put("/{product_id}", status_code = status.HTTP_200_OK)
-async def update(product_id: int, product: ProductUpdate) -> dict[str, Product]:
+async def update(product_id: int, product: Product) -> dict[str, Product]:
     result = await update_product(product_id, product)
+    print(result)
     if result is None:
         raise HTTPException(status_code = 404, 
                             detail = "Product not found to update", 
                             headers = {"X-Error" : "404 error"})
-    elif result is not None and result["product_id"] == -1:
+    elif result is not None and result.product_id == 0:
         raise HTTPException(status_code = 500, 
                             detail = "Something went wrong", 
                             headers = {"X-Error" : "500 server error"})
