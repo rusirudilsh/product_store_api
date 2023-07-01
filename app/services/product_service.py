@@ -61,7 +61,7 @@ async def delete_product(product_id: int) -> bool:
     
 
 
-class ProductProcessor():
+class ProductProcessor:
     @staticmethod
     async def get_product_list() -> list[Product]:
         return await read_csv("../schema/products.csv")
