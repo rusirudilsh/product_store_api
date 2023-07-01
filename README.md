@@ -45,11 +45,17 @@ run the command "docker-compose up -d" (-d = detached mode)
 navigate to http://localhost:8000/
 ```
 
+## Testing
+
+```sh
+http://localhost:8000/docs
+```
 
 ## API Documentation
 
 ```sh
-http://localhost:8000/docs
+![image](https://github.com/rusirudilsh/product_store_api/assets/12104625/df4b9081-d081-4eee-b1f0-d8ef5a921b93)
+
 ```
 
 ## Use Case Diagram
