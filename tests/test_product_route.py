@@ -33,7 +33,8 @@ def test_update():
     response = client.put("/product/5",
                           json = {"product_id":5,
                                   "name":"Ivo blue",
-                                   "price":15.0})
+                                  "category":"Tops", 
+                                  "price":15.0, "stock_count": 0})
     assert response.status_code == 200
     assert response.json() == {
         "updatedProduct" : {"product_id":5,
@@ -47,7 +48,8 @@ def test_update_404():
     response = client.put("/product/500",
                           json = {"product_id":500,
                                   "name":"Ivo blue",
-                                  "price":15.0})
+                                  "category":"Tops", 
+                                  "price":15.0, "stock_count": 104})
     assert response.status_code == 404
 
 

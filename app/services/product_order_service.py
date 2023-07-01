@@ -5,17 +5,20 @@ import pandas as pd
 
 
 async def make_purchase(order: ProductOrder):
-    result = await OrderProcessor.update_stock_count(order)
+    orderProcessor = OrderProcessor(order)
+    result = await orderProcessor.update_stock_count()
     return result
 
 
 
 class OrderProcessor:
-    @staticmethod
-    async def update_stock_count(order_data: ProductOrder) -> tuple[bool, str]:
+    def __init__(self, order: ProductOrder):
+        self.order = order
+
+    async def update_stock_count(self) -> tuple[bool, str]:
         try:
-            if len(order_data.items) > 0:
-                item = order_data.items[0]
+            if len(self.order.items) > 0:
+                item = self.order.items[0]
                 data_frame = pd.read_csv(os.path.join(os.path.dirname(__file__), "../schema/stocks.csv"), index_col='product_id')
                 product = next(filter(lambda prod: int(prod["product_id"]) ==  item.product_id, 
                             await ProductProcessor.get_product_list()), None)

@@ -4,7 +4,7 @@ from typing import List
 
 
 class OrderItem(BaseModel):
-    product_id: int
+    product_id: int = Query(gt=0)
     quantity: int = Query(gt=0)
 
 
