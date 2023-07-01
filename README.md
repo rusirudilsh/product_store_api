@@ -47,10 +47,8 @@ navigate to http://localhost:8000/
 
 ## Testing
 
-```sh
 ![image](https://github.com/rusirudilsh/product_store_api/assets/12104625/870ab28c-a39d-4947-81f3-f7629ce0575b)
 
-```
 
 ## API Documentation
 
