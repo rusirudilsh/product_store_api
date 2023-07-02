@@ -69,7 +69,7 @@ class ProductProcessor:
     
 
     @staticmethod
-    async def set_product_props(product: Product):
+    async def set_product_props(product: Product) -> Product:
         product_stoks = await read_csv("../schema/stocks.csv")
         product_stock = next(filter(lambda prod: int(prod["product_id"]) == int(product["product_id"]), product_stoks), None)
         if product_stock is not None:
