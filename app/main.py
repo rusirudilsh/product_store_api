@@ -5,6 +5,7 @@ from .routes import main_api_router
 from fastapi.middleware.cors import CORSMiddleware
 from .config import get_settings
 
+
 description = """ 
 Product Store API serves your Online Store
 """
@@ -17,7 +18,7 @@ product_store_api = FastAPI(
 
 product_store_api.add_middleware(
     CORSMiddleware,
-    allow_origins= get_settings().origins,
+    allow_origins= get_settings().allowed_origins.split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
