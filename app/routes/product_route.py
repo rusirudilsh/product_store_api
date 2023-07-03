@@ -10,7 +10,7 @@ product_router = APIRouter()
 @product_router.get("/list", status_code = status.HTTP_200_OK)
 async def list_products(
     category: str | None = None,
-    stock_availability: bool | None = None,
+    stock_availability: bool = False,
     first: int = 0,
     products_per_page: int = 10
 ):
