@@ -4,10 +4,12 @@ from ..models.product_order import ProductOrder
 import pandas as pd
 
 
-async def make_purchase(order: ProductOrder):
-    orderProcessor = OrderProcessor(order)
-    result = await orderProcessor.update_stock_count()
-    return result
+class OrderService:
+
+    async def make_purchase(order: ProductOrder):
+        orderProcessor = OrderProcessor(order)
+        result = await orderProcessor.update_stock_count()
+        return result
 
 
 

@@ -1,61 +1,63 @@
-from ..utility.file_helper import read_csv, remove_from_csv
+from ..utility.file_helper import FileHelper
 from ..models.product import Product
 import pandas as pd
 import os
 
 
-async def get_products(category: str, stock_availability: bool, current_products_count: int, products_per_page: int) -> tuple[list[Product], int]:
-    products = await ProductProcessor.get_product_list()
-    products_count = len(products)
-    if products_count > 0 :
-        for product in products:
-            product = await ProductProcessor.set_product_props(product)
-        if category is not None and len(category) > 1 and category != "All" or stock_availability is True:
-            products = [prod for prod in products if ProductProcessor.filter_product(prod, category, stock_availability)]
+class ProductService:
 
-            #to set the product count after the filtering
-            #this will helps to adjust the paginator after filtering the list
-            #paginotor will be adjusted automatically with all the products as well as filtered products
-            products_count = len(products)
-        slice_start = current_products_count
-        slice_stop = products_per_page + current_products_count
-        products = products[slice_start:slice_stop]
-        
-    return (products, products_count)
-
-
-async def get_product_by_id(id: int) -> Product:
-    try:
+    async def get_products(category: str, stock_availability: bool, current_products_count: int, products_per_page: int) -> tuple[list[Product], int]:
         products = await ProductProcessor.get_product_list()
-        result = next(filter(lambda product: int(product["product_id"]) == id, products), None)
-        if result is not None:
-            await ProductProcessor.set_product_props(result)  
+        products_count = len(products)
+        if products_count > 0 :
+            for product in products:
+                product = await ProductProcessor.set_product_props(product)
+            if category is not None and len(category) > 1 and category != "All" or stock_availability is True:
+                products = [prod for prod in products if ProductProcessor.filter_product(prod, category, stock_availability)]
+
+                #to set the product count after the filtering
+                #this will helps to adjust the paginator after filtering the list
+                #paginotor will be adjusted automatically with all the products as well as filtered products
+                products_count = len(products)
+            slice_start = current_products_count
+            slice_stop = products_per_page + current_products_count
+            products = products[slice_start:slice_stop]
+            
+        return (products, products_count)
+
+
+    async def get_product_by_id(id: int) -> Product:
+        try:
+            products = await ProductProcessor.get_product_list()
+            result = next(filter(lambda product: int(product["product_id"]) == id, products), None)
+            if result is not None:
+                await ProductProcessor.set_product_props(result)  
+            return result
+        except Exception as error:
+            return Product
+
+        
+    async def update_product(product_id: int, update_product: Product) -> Product:
+        products = await ProductProcessor.get_product_list()
+        product = next(filter(lambda prod: int(prod["product_id"]) == product_id, products), None)  
+        if product is None:
+            return None  
+        else:
+            update_product.product_id = product_id
+            productProcessor = ProductProcessor(product)
+            result = productProcessor.update_product_row()        
+            return update_product if result is True else Product
+
+        
+    async def delete_product(product_id: int) -> bool:
+        product = next(filter(lambda prod: int(prod["product_id"]) == product_id, 
+                            await ProductProcessor.get_product_list()), None)
+        if product is None:
+            return None  
+        result = FileHelper.remove_from_csv("../schema/products.csv", "product_id", product_id)
+        if result is True:
+            ProductProcessor.remove_product_stock(product_id)
         return result
-    except Exception as error:
-        return Product
-
-    
-async def update_product(product_id: int, update_product: Product) -> Product:
-    products = await ProductProcessor.get_product_list()
-    product = next(filter(lambda prod: int(prod["product_id"]) == product_id, products), None)  
-    if product is None:
-        return None  
-    else:
-        update_product.product_id = product_id
-        productProcessor = ProductProcessor(product)
-        result = productProcessor.update_product_row()        
-        return update_product if result is True else Product
-
-    
-async def delete_product(product_id: int) -> bool:
-    product = next(filter(lambda prod: int(prod["product_id"]) == product_id, 
-                          await ProductProcessor.get_product_list()), None)
-    if product is None:
-        return None  
-    result = remove_from_csv("../schema/products.csv", "product_id", product_id)
-    if result is True:
-        ProductProcessor.remove_product_stock(product_id)
-    return result
     
 
 
@@ -65,12 +67,12 @@ class ProductProcessor:
 
     @staticmethod
     async def get_product_list() -> list[Product]:
-        return await read_csv("../schema/products.csv")
+        return await FileHelper.read_csv("../schema/products.csv")
     
 
     @staticmethod
-    async def set_product_props(product: Product):
-        product_stoks = await read_csv("../schema/stocks.csv")
+    async def set_product_props(product: Product) -> Product:
+        product_stoks = await FileHelper.read_csv("../schema/stocks.csv")
         product_stock = next(filter(lambda prod: int(prod["product_id"]) == int(product["product_id"]), product_stoks), None)
         if product_stock is not None:
             product["category"] = product["category"].title()
@@ -82,7 +84,7 @@ class ProductProcessor:
 
     @staticmethod
     def remove_product_stock(product_id: int) -> bool:
-        return remove_from_csv("../schema/stocks.csv", "product_id", product_id)
+        return FileHelper.remove_from_csv("../schema/stocks.csv", "product_id", product_id)
     
 
     def update_product_row(self) -> bool:

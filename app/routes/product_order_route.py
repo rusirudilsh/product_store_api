@@ -1,13 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from ..models.product_order import ProductOrder
-from ..services.product_order_service import make_purchase
+from ..services.product_order_service import OrderService
 
 
 order_router = APIRouter()
 
 @order_router.post("/")
 async def purchase_product(order_item: ProductOrder):
-    result = await make_purchase(order_item)
+    result = await OrderService.make_purchase(order_item)
     if result[1] == "404":
         raise HTTPException(status_code = 404, 
                             detail = "Order Item not found", 

@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
-from ..services.product_service import delete_product, get_products, get_product_by_id, update_product
+from ..services.product_service import ProductService
 from ..models.product import Product
-from typing import List
 
 
 product_router = APIRouter()
@@ -14,13 +13,13 @@ async def list_products(
     first: int = 0,
     products_per_page: int = 10
 ):
-    result = await get_products(category, stock_availability, first, products_per_page)
+    result = await ProductService.get_products(category, stock_availability, first, products_per_page)
     return {"products": result[0], "productCount": result[1]}
 
 
 @product_router.get("/{product_id}", status_code = status.HTTP_200_OK)
 async def get_by_id(product_id: int) -> dict[str, Product]:
-    result = await get_product_by_id(product_id)
+    result = await ProductService.get_product_by_id(product_id)
     if result is None:
         raise HTTPException(status_code = 404, 
                             detail = "Product not found", 
@@ -30,7 +29,7 @@ async def get_by_id(product_id: int) -> dict[str, Product]:
 
 @product_router.put("/{product_id}", status_code = status.HTTP_200_OK)
 async def update(product_id: int, product: Product) -> dict[str, Product]:
-    result = await update_product(product_id, product)
+    result = await ProductService.update_product(product_id, product)
     print(result)
     if result is None:
         raise HTTPException(status_code = 404, 
@@ -45,7 +44,7 @@ async def update(product_id: int, product: Product) -> dict[str, Product]:
 
 @product_router.delete("/{product_id}", status_code = status.HTTP_200_OK)
 async def delete(product_id: int):
-    result = await delete_product(product_id)
+    result = await ProductService.delete_product(product_id)
     if result is None:
         raise HTTPException(status_code = 404, 
                             detail = "Product not found to delete", 
