@@ -10,7 +10,7 @@ async def get_products(category: str, stock_availability: bool, current_products
     if products_count > 0 :
         for product in products:
             product = await ProductProcessor.set_product_props(product)
-        if category is not None and len(category) > 1 and category != "All" or stock_availability is True:
+        if category is not None and len(category) > 0 and category != "All" or stock_availability is True:
             products = [prod for prod in products if ProductProcessor.filter_product(prod, category, stock_availability)]
 
             #to set the product count after the filtering
