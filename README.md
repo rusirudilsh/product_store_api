@@ -47,7 +47,8 @@ navigate to http://localhost:8000/
 
 ## Testing
 
-![image](https://github.com/rusirudilsh/product_store_api/assets/12104625/870ab28c-a39d-4947-81f3-f7629ce0575b)
+![image](https://github.com/rusirudilsh/product_store_api/assets/12104625/89cdb047-c8ce-46a0-8449-a3dd85bb6849)
+
 
 
 ## API Documentation
