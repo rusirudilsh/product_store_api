@@ -58,7 +58,8 @@ http://localhost:8000/docs
 ```
 
 ## Use Case Diagram
-![image](https://github.com/rusirudilsh/product_store_api/assets/12104625/258797ef-799e-4f3b-a4fc-2d0461f0ecbc)
+![image](https://github.com/rusirudilsh/product_store_api/assets/12104625/380a9fc1-4ca8-4aa5-9488-36359990734c)
+
 
 
 
