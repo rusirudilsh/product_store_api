@@ -47,7 +47,8 @@ navigate to http://localhost:8000/
 
 ## Testing
 
-![image](https://github.com/rusirudilsh/product_store_api/assets/12104625/870ab28c-a39d-4947-81f3-f7629ce0575b)
+![image](https://github.com/rusirudilsh/product_store_api/assets/12104625/89cdb047-c8ce-46a0-8449-a3dd85bb6849)
+
 
 
 ## API Documentation
@@ -58,7 +59,9 @@ http://localhost:8000/docs
 ```
 
 ## Use Case Diagram
-![image](https://github.com/rusirudilsh/product_store_api/assets/12104625/87e29446-17eb-457f-8e8f-bc8af9727270)
+![image](https://github.com/rusirudilsh/product_store_api/assets/12104625/380a9fc1-4ca8-4aa5-9488-36359990734c)
+
+
 
 
 
