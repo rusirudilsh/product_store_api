@@ -28,7 +28,7 @@ jobs:
     - name: Build coverage
       id: coverage_comment
       run: |
-        pytest  --cov=. > coverage.txt
+        pytest  --cov=. >> $GITHUB_OUTPUT
     - name: Add comment to PR
       env:
         URL: ${{ github.event.pull_request.comments_url }}
