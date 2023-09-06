@@ -6,15 +6,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      # Gives the action the necessary permissions for publishing new
-      # comments in pull requests.
-      pull-requests: write
-      # Gives the action the necessary permissions for pushing data to the
-      # python-coverage-comment-action branch, and for editing existing
-      # comments (to avoid publishing multiple comments in the same PR)
-      contents: write
-      actions: read
+    env:
+      COVERAGE_SINGLE: 60
+      COVERAGE_TOTAL: 60
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.11
@@ -27,19 +22,48 @@ jobs:
         pip install flake8 pytest pytest-cov
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Launch tests & generate report
-      run: pytest
-
-    - name: Coverage comment
-      id: coverage_comment
-      uses: py-cov-action/python-coverage-comment-action@v3
+    - name: pytester-cov
+      id: pytester-cov
+      uses: programmingwithalex/pytester-cov@main
       with:
-        GITHUB_TOKEN: ${{ github.token }}
-        VERBOSE: true
+        pytest-root-dir: '.'
+        cov-omit-list: 'test/*, temp/main3.py, temp/main4.py'
+        cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
+        cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
 
-    - name: Store Pull Request comment to be posted
-      uses: actions/upload-artifact@v2
-      if: steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true'
+    - name: Coverage single fail - new issue
+      if: ${{ steps.pytester-cov.outputs.cov-threshold-single-fail == 'true' }}
+      uses: nashmaniac/create-issue-action@v1.1
       with:
-        name: python-coverage-comment-action
-        path: python-coverage-comment-action.txt
+        title: Pytest coverage single falls below minimum ${{ env.COVERAGE_SINGLE }}
+        token: ${{secrets.GITHUB_TOKEN}}
+        assignees: ${{github.actor}}
+        labels: workflow-failed
+        body: ${{ steps.pytester-cov.outputs.output-table }}
+
+    - name: Coverage single fail - exit
+      if: ${{ steps.pytester-cov.outputs.cov-threshold-single-fail == 'true' }}
+      run: |
+        echo "cov single fail ${{ steps.pytester-cov.outputs.cov-threshold-single-fail }}"
+        exit 1
+
+    - name: Coverage total fail - new issue
+      if: ${{ steps.pytester-cov.outputs.cov-threshold-total-fail == 'true' }}
+      uses: nashmaniac/create-issue-action@v1.1
+      with:
+        title: Pytest coverage total falls below minimum ${{ env.COVERAGE_TOTAL }}
+        token: ${{secrets.GITHUB_TOKEN}}
+        assignees: ${{github.actor}}
+        labels: workflow-failed
+        body: ${{ steps.pytester-cov.outputs.output-table }}
+
+    - name: Coverage total fail - exit
+      if: ${{ steps.pytester-cov.outputs.cov-threshold-total-fail == 'true' }}
+      run: |
+        echo "cov single fail ${{ steps.pytester-cov.outputs.cov-threshold-total-fail }}"
+        exit 1
+
+    - name: Commit pytest coverage table
+      uses: peter-evans/commit-comment@main
+      with:
+        body: ${{ steps.pytester-cov.outputs.output-table }}
