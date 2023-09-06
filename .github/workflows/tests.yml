@@ -1,16 +1,12 @@
-name: CI
-
+name: pytest-coverage-commentator
 on:
   pull_request:
-  push:
-    branches:
-      - "main"
-
+    branches: 
+      - '*'
 jobs:
-  test:
-    name: Run tests & display coverage
+  build:
     runs-on: ubuntu-latest
-    permissions:
+     permissions:
       # Gives the action the necessary permissions for publishing new
       # comments in pull requests.
       pull-requests: write
@@ -19,14 +15,18 @@ jobs:
       # comments (to avoid publishing multiple comments in the same PR)
       contents: write
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Install everything, run the tests, produce the .coverage file
-        run: |
-        pytest --cov-report html:coverage --cov=product_store_api tests/ 
-
-      - name: Coverage comment
-        id: coverage_comment
-        uses: py-cov-action/python-coverage-comment-action@v3
-        with:
-          GITHUB_TOKEN: ${{ github.token }}
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.11
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest pytest-cov
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Build coverage file
+      run: |
+        pytest --cache-clear --cov=product_store_api tests/ > pytest-coverage.txt
+    - name: Comment coverage
+      uses: coroo/pytest-coverage-commentator@v1.0.2
