@@ -14,6 +14,7 @@ jobs:
       # python-coverage-comment-action branch, and for editing existing
       # comments (to avoid publishing multiple comments in the same PR)
       contents: write
+      actions: read
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.11
@@ -25,7 +26,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest pytest-cov
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        
+
     - name: Launch tests & generate report
       run: pytest
 
