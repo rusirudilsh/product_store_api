@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-     permissions:
+    permissions:
       # Gives the action the necessary permissions for publishing new
       # comments in pull requests.
       pull-requests: write
