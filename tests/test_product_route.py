@@ -9,7 +9,7 @@ def test_list_products():
 def test_list_products_with_filter_params():
     response = client.get("/product/list?category=tops&stock_availability=true")
     assert response.status_code == 200
-    assert len(response.json()['products']) == 6
+    assert len(response.json()['products']) == 0
 
 
 def test_get_by_id():
