@@ -22,7 +22,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install everything, run the tests, produce the .coverage file
-        run: pytest --cache-clear --cov-report html:coverage --cov=product_store_api tests/ # This is the part where you put your own test command
+        run: |
+        pytest --cov-report html:coverage --cov=product_store_api tests/ 
 
       - name: Coverage comment
         id: coverage_comment
