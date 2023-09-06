@@ -25,9 +25,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest pytest-cov
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Build coverage file
+    - name: Build coverage
+      id: coverage_comment
       run: |
-        pytest  --cov=.
+        pytest  --cov=. > $GITHUB_OUTPUT
     - name: Add comment to PR
       env:
         URL: ${{ github.event.pull_request.comments_url }}
@@ -38,4 +39,4 @@ jobs:
             $URL \
             -H "Content-Type: application/json" \
             -H "Authorization: token $GITHUB_TOKEN" \
-            --data '{ "body": "blah blah" }'
+            --data '{ "body": ${{steps.coverage_comment.outputs.*}} }'
