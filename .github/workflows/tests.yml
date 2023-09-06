@@ -21,10 +21,10 @@ jobs:
       with:
         python-version: 3.11
     - name: Install dependencies
-       run: pytest # This is the part where you put your own test command
+      run: pytest # This is the part where you put your own test command
 
     - name: Launch tests & generate report
-        run: pytest
+      run: pytest
 
     - name: Coverage comment
       id: coverage_comment
