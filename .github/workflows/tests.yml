@@ -21,22 +21,21 @@ jobs:
       with:
         python-version: 3.11
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest pytest-cov
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Build coverage
+       run: pytest # This is the part where you put your own test command
+
+    - name: Launch tests & generate report
+        run: pytest
+
+    - name: Coverage comment
       id: coverage_comment
-      run: |
-        echo $(pytest  --cov=.) >> $GITHUB_OUTPUT
-    - name: Add comment to PR
-      env:
-        URL: ${{ github.event.pull_request.comments_url }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-          curl \
-            -X POST \
-            $URL \
-            -H "Content-Type: application/json" \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            --data '{ "body": ${{steps.coverage_comment.outputs.*}} }'
+      uses: py-cov-action/python-coverage-comment-action@v3
+      with:
+        GITHUB_TOKEN: ${{ github.token }}
+        VERBOSE: true
+
+    - name: Store Pull Request comment to be posted
+      uses: actions/upload-artifact@v2
+      if: steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true'
+      with:
+        name: python-coverage-comment-action
+        path: python-coverage-comment-action.txt
