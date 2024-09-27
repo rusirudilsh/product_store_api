@@ -7,9 +7,9 @@ from .product_order_route import order_router
 main_api_router = APIRouter()
 
 
-main_api_router.include_router(product_router, prefix="/product", tags=["product"])
-main_api_router.include_router(category_router, prefix="/category", tags=["category"])
-main_api_router.include_router(order_router, prefix="/order", tags=["order"])
+main_api_router.include_router(product_router, prefix="/products", tags=["products"])
+main_api_router.include_router(category_router, prefix="/categories", tags=["categories"])
+main_api_router.include_router(order_router, prefix="/orders", tags=["orders"])
 
 
 @main_api_router.get("/")
